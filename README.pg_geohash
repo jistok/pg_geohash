@@ -1,3 +1,0 @@
-pg_geohash: expose geohashing capability of https://github.com/lyokato/libgeohash
-through SQL
-
