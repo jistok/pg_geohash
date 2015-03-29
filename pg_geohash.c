@@ -67,7 +67,6 @@ lat_lon_to_geohash (PG_FUNCTION_ARGS)
     lon = PG_GETARG_FLOAT8(1);
     hash = GEOHASH_encode(lat, lon, hash_len);
 
-    /* log the length of hash? */
     /* elog(INFO, "MIKE: geohash \"%s\" has length %d", hash, (int) strlen(hash)); */
 
     rv_len = strlen(hash) + 1;
@@ -85,32 +84,28 @@ PG_FUNCTION_INFO_V1 (geohash_to_lat_lon);
 Datum
 geohash_to_lat_lon (PG_FUNCTION_ARGS)
 {
-    char *hash;
+    text *hash; /* Passed in by ref. as arg0 */
+    GEOHASH_area *area; /* Freed here */
     double lat, lon;
-    text *rv;
-    /* Max. length of geohash is 12 */
-    int hash_len = 12;
+    char buf[255];
+    text *rv; /* Return value */
     int rv_len;
 
-    if (PG_ARGISNULL(0) || PG_ARGISNULL(1)) {
+    if (PG_ARGISNULL(0)) {
       PG_RETURN_NULL();
     }
 
-    lat = PG_GETARG_FLOAT8(0);
-    lon = PG_GETARG_FLOAT8(1);
-    hash = GEOHASH_encode(lat, lon, hash_len);
+    hash = PG_GETARG_TEXT_P(0);
+    area = GEOHASH_decode(VARDATA(hash));
+    lat = area->latitude.min + (area->latitude.max - area->latitude.min)/2.0;
+    lon = area->longitude.min + (area->longitude.max - area->longitude.min)/2.0;
+    GEOHASH_free_area(area);
+    snprintf(buf, 255, "(%f, %f)", lat, lon);
 
-    /* log the length of hash? */
-    /* elog(INFO, "MIKE: geohash \"%s\" has length %d", hash, (int) strlen(hash)); */
-
-    rv_len = strlen(hash) + 1;
+    rv_len = strlen(buf) + 1;
     rv = (text *) palloc(VARHDRSZ + rv_len);
     SET_VARSIZE(rv, VARHDRSZ + rv_len);
-    /*
-     * VARDATA is a pointer to the data region of the struct.
-     */
-    memcpy(VARDATA(rv), hash, rv_len);
-    free(hash);
+    memcpy(VARDATA(rv), buf, rv_len);
     PG_RETURN_TEXT_P(rv);
 }
 
