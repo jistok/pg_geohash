@@ -1,6 +1,8 @@
 # pg_geohash
 Geohashing functionality for HAWQ, Greenplum DB, PostgreSQL
 
+* Motivated by the need to compute aggregates based on geographic location
+* Geohash background: http://en.wikipedia.org/wiki/Geohash
 * C based user defined function
 * Based on this C language geohashing library: https://github.com/lyokato/libgeohash.git
 * Install (shown here on Pivotal HD single node VM, CentOS release 6.5):
