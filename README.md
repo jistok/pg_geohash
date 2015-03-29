@@ -3,7 +3,7 @@ Geohashing functionality for HAWQ, Greenplum DB, PostgreSQL
 
 * Motivated by the need to compute aggregates based on geographic location
 * Geohash background: http://en.wikipedia.org/wiki/Geohash
-* C based user defined function
+* C based user defined functions
 * Based on this C language geohashing library: https://github.com/lyokato/libgeohash.git
 * Install (everthing shown here was run on the Pivotal HD single node VM, CentOS release 6.5):
 NOTE: the user running the `make install` requires write permission into the installation
@@ -99,4 +99,8 @@ demo-# LIMIT 20;
 
 Time: 1243.502 ms
 ```
+
+* Researching the loss of precision in the coordinates returned by geohash_to_lat_lon is a TODO,
+but it doesn't seem to affect the ability to recover an address using the supplied result.
+
 
