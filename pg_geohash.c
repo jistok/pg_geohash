@@ -57,7 +57,7 @@ lat_lon_to_geohash (PG_FUNCTION_ARGS)
     text *rv;
     /* Max. length of geohash is 12 */
     int hash_len = 12;
-    int rv_len;
+    size_t rv_len;
 
     if (PG_ARGISNULL(0) || PG_ARGISNULL(1)) {
       PG_RETURN_NULL();
@@ -66,8 +66,6 @@ lat_lon_to_geohash (PG_FUNCTION_ARGS)
     lat = PG_GETARG_FLOAT8(0);
     lon = PG_GETARG_FLOAT8(1);
     hash = GEOHASH_encode(lat, lon, hash_len);
-
-    /* elog(INFO, "MIKE: geohash \"%s\" has length %d", hash, (int) strlen(hash)); */
 
     rv_len = strlen(hash) + 1;
     rv = (text *) palloc(VARHDRSZ + rv_len);
@@ -89,14 +87,36 @@ geohash_to_lat_lon (PG_FUNCTION_ARGS)
     double lat, lon;
     char buf[255];
     text *rv; /* Return value */
-    int rv_len;
+    size_t rv_len;
+    char *hash_as_char;
+    size_t hash_len;
 
     if (PG_ARGISNULL(0)) {
       PG_RETURN_NULL();
     }
 
     hash = PG_GETARG_TEXT_P(0);
-    area = GEOHASH_decode(VARDATA(hash));
+    if (hash == NULL) {
+      elog(ERROR, "Geohash is NULL");
+      PG_RETURN_NULL();
+    }
+
+    hash_len = VARSIZE(hash) - VARHDRSZ;
+    hash_as_char = (char *) palloc(hash_len + 1);
+    memcpy(hash_as_char, VARDATA(hash), hash_len);
+    if (hash_as_char == NULL) {
+      elog(ERROR, "VARDATA(geohash) returns NULL");
+      PG_RETURN_NULL();
+    }
+    *(hash_as_char + hash_len) = '\0';
+ 
+    area = GEOHASH_decode(hash_as_char);
+    pfree(hash_as_char);
+    if (area == NULL) {
+      elog(ERROR, "GEOHASH_decode returns NULL");
+      PG_RETURN_NULL();
+    }
+
     lat = area->latitude.min + (area->latitude.max - area->latitude.min)/2.0;
     lon = area->longitude.min + (area->longitude.max - area->longitude.min)/2.0;
     GEOHASH_free_area(area);
@@ -104,6 +124,10 @@ geohash_to_lat_lon (PG_FUNCTION_ARGS)
 
     rv_len = strlen(buf) + 1;
     rv = (text *) palloc(VARHDRSZ + rv_len);
+    if (rv == NULL) {
+      elog(ERROR, "Failed to palloc() return value");
+      PG_RETURN_NULL();
+    }
     SET_VARSIZE(rv, VARHDRSZ + rv_len);
     memcpy(VARDATA(rv), buf, rv_len);
     PG_RETURN_TEXT_P(rv);
