@@ -22,11 +22,18 @@
  * THE SOFTWARE.
  */
 
-CREATE OR REPLACE FUNCTION lat_lon_to_geohash (float8, float8) RETURNS text
-  AS 'pg_geohash', 'lat_lon_to_geohash'
+CREATE OR REPLACE FUNCTION lat_lon_to_geohash_with_len (float8, float8, int) RETURNS TEXT
+  AS 'pg_geohash', 'lat_lon_to_geohash_with_len'
+  IMMUTABLE
   LANGUAGE C;
 
-CREATE OR REPLACE FUNCTION geohash_to_lat_lon (text) RETURNS text
+CREATE OR REPLACE FUNCTION lat_lon_to_geohash (float8, float8) RETURNS TEXT
+  AS 'pg_geohash', 'lat_lon_to_geohash'
+  IMMUTABLE
+  LANGUAGE C;
+
+CREATE OR REPLACE FUNCTION geohash_to_lat_lon (text) RETURNS TEXT
   AS 'pg_geohash', 'geohash_to_lat_lon'
+  IMMUTABLE
   LANGUAGE C;
 
