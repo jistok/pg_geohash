@@ -24,7 +24,7 @@ Time: 12.904 ms
 the first 5 characters of the hash to divide the region up into approximately 70 divisions.
 
 ```
-demo=# SELECT SUBSTRING(LAT_LON_TO_GEOHASH(latitude, longitude) FROM 1 for 5) geohash, COUNT(*)
+demo=# SELECT LAT_LON_TO_GEOHASH_WITH_LEN(latitude, longitude, 5) geohash, COUNT(*)
 demo-# FROM crimes
 demo-# GROUP BY 1
 demo-# ORDER BY 2 DESC
