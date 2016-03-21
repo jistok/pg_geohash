@@ -92,6 +92,9 @@ lat_lon_to_geohash (PG_FUNCTION_ARGS)
     lat = PG_GETARG_FLOAT8(0);
     lon = PG_GETARG_FLOAT8(1);
     hash = GEOHASH_encode(lat, lon, hash_len);
+    if (hash == NULL) {
+      PG_RETURN_NULL();
+    }
 
     rv_len = strlen(hash) + 1;
     rv = (text *) palloc(VARHDRSZ + rv_len);
@@ -130,6 +133,9 @@ lat_lon_to_geohash_with_len (PG_FUNCTION_ARGS)
     lat = PG_GETARG_FLOAT8(0);
     lon = PG_GETARG_FLOAT8(1);
     hash = GEOHASH_encode(lat, lon, hash_len);
+    if (hash == NULL) {
+      PG_RETURN_NULL();
+    }
 
     rv_len = strlen(hash) + 1;
     rv = (text *) palloc(VARHDRSZ + rv_len);

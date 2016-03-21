@@ -170,11 +170,9 @@ GEOHASH_encode(double lat, double lon, unsigned int len)
     double val1, val2, val_tmp;
     GEOHASH_range *range1, *range2, *range_tmp;
 
-    assert(lat >= -90.0);
-    assert(lat <= 90.0);
-    assert(lon >= -180.0);
-    assert(lon <= 180.0);
-    assert(len <= MAX_HASH_LENGTH);
+    /* Check bounds, wtihout using assert() */
+    if (!(lat >= -90.0 && lat <= 90.0 && lon >= -180.0 && lon <= 180.0 && len <= MAX_HASH_LENGTH))
+      return NULL;
 
     hash = (char *)malloc(sizeof(char) * (len + 1));
     if (hash == NULL)
