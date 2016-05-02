@@ -81,8 +81,7 @@ lat_lon_to_geohash (PG_FUNCTION_ARGS)
     char *hash;
     double lat, lon;
     text *rv;
-    /* Max. length of geohash is 12 */
-    int hash_len = 12;
+    int hash_len = 20; /* There is an error in the 20th char vs. PostGIS geohash */
     size_t rv_len;
 
     if (PG_ARGISNULL(0) || PG_ARGISNULL(1)) {
@@ -96,7 +95,7 @@ lat_lon_to_geohash (PG_FUNCTION_ARGS)
       PG_RETURN_NULL();
     }
 
-    rv_len = strlen(hash) + 1;
+    rv_len = strlen(hash); /* NOTE: no need to add one for null terminator */
     rv = (text *) palloc(VARHDRSZ + rv_len);
     SET_VARSIZE(rv, VARHDRSZ + rv_len);
     /*
@@ -119,8 +118,7 @@ lat_lon_to_geohash_with_len (PG_FUNCTION_ARGS)
     char *hash;
     double lat, lon;
     text *rv;
-    /* Max. length of geohash is 12 */
-    int hash_len = 12;
+    int hash_len = 20;
     size_t rv_len;
 
     if (PG_ARGISNULL(0) || PG_ARGISNULL(1)) {
@@ -137,7 +135,7 @@ lat_lon_to_geohash_with_len (PG_FUNCTION_ARGS)
       PG_RETURN_NULL();
     }
 
-    rv_len = strlen(hash) + 1;
+    rv_len = strlen(hash);
     rv = (text *) palloc(VARHDRSZ + rv_len);
     SET_VARSIZE(rv, VARHDRSZ + rv_len);
     /*
