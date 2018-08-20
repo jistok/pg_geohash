@@ -1,0 +1,5 @@
+# geohash extension
+comment = 'handle geohash based functionality for spatial coordinates'
+default_version = '1.0'
+module_pathname = '$libdir/pg_geohash'
+relocatable = true

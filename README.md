@@ -9,6 +9,14 @@ Geohashing functionality for HAWQ, Greenplum DB, PostgreSQL
 NOTE: the user running the `make install` requires write permission into the installation
 directory of the target database.
 
+## Prerequisites for PostgreSQL on Ubuntu
+```
+$ sudo apt install libpq-dev
+$ sudo apt install postgresql
+$ sudo apt-get install postgresql-server-dev-all
+```
+
+## Build / Install
 ```
 [gpadmin@pivotalvm pg_geohash]$ make
 ... output deleted
