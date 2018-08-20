@@ -20,7 +20,7 @@ $ sudo apt-get install postgresql-server-dev-all
 ```
 [gpadmin@pivotalvm pg_geohash]$ make
 ... output deleted
-[gpadmin@pivotalvm pg_geohash]$ make install
+[gpadmin@pivotalvm pg_geohash]$ sudo make install
 ... output deleted
 [gpadmin@pivotalvm pg_geohash]$ psql demo -f ./pg_geohash-1.0.sql
 Timing is on.
