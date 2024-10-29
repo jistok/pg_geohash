@@ -31,6 +31,12 @@ THE SOFTWARE.
 
 #include "geohash.h"
 
+#ifdef PG_VERSION_NUM
+    #if PG_VERSION_NUM >= 160000
+        #include "varatt.h"
+    #endif
+#endif
+
 #define MAX_HASH_LENGTH 22
 
 #define REFINE_RANGE(range, bits, offset) \
