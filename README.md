@@ -22,10 +22,8 @@ $ sudo apt-get install postgresql-server-dev-all
 ... output deleted
 [gpadmin@pivotalvm pg_geohash]$ sudo make install
 ... output deleted
-[gpadmin@pivotalvm pg_geohash]$ psql demo -f ./pg_geohash-1.0.sql
-Timing is on.
-CREATE FUNCTION
-Time: 12.904 ms
+[gpadmin@pivotalvm pg_geohash]$ psql demo -c 'CREATE EXTENSION pg_geohash;'
+CREATE EXTENSION
 ```
 
 * Usage example: compute the geohash based on latitude and longitude values, taking just
